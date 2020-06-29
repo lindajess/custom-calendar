@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
-import { datesReducer } from 'dates'
+import { remindersReducer } from './reminders'
 
 export default combineReducers({
-    dates: datesReducer
+    reminders: remindersReducer
 })

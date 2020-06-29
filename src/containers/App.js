@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux'
+import { RemindersActions, RemindersSelectors } from '../store/reminders/reminders_reducer'
 import styled from 'styled-components'
-import { AccessAlarm } from '@material-ui/icons';
+import { ControlPoint, } from '@material-ui/icons';
+import ClearIcon from '@material-ui/icons/Clear';
+import CreateIcon from '@material-ui/icons/Create';
 import { firstDayOfMonth, daysInMonth } from '../utils/getDays'
 
 
@@ -9,20 +13,31 @@ const CalendarContainer = styled.div`
   grid-template-columns:  repeat(7, 1fr);
 `
 
-/* const SelectedCell = styled.div`
-  background-color: red;
-`
- */
-
-const Cell = ({ position, notes }) => {
-  const date = new Date()
-  const currentDay = date.getDate()
-  /* const comp = position === currentDay ?
-    <SelectedCell > {position} </SelectedCell> :
-    <div key={position}> {position} </div> */
-
+const Reminder = ({ reminder, deleteReminder, editReminder }) => {
+  const { id, name, description, time, city } = reminder
   return <div>
-    <AccessAlarm />
+    {name}
+    {description}
+    {time}
+    {city}
+
+
+    <ClearIcon onClick={() => deleteReminder(id)} />
+    <CreateIcon onClick={() => editReminder({ id: id })} />
+
+  </div>
+}
+
+
+const Cell = ({ position, reminders, addReminder, ...rest }) => {
+  return <div>
+    {position}
+    {reminders.map((item) => {
+      return <Reminder reminder={item} {...rest} />
+    })}
+
+    <ControlPoint fontSize="small" onClick={() => addReminder({})} />
+
   </div>
 }
 
@@ -36,19 +51,19 @@ const EmphySpaces = ({ spaces }) => {
   return spacesObj
 }
 
-const Spaces = ({ spaces, currentDay }) => {
+const Spaces = ({ month, year, spaces, reminders, currentDay, ...rest }) => {
   let spacesObj = []
   for (let i = 1; i <= spaces; i++) {
-
-
-    spacesObj.push(<Cell position={i} />)
+    const remindersList = reminders.filter(item => item.year === year && item.month === month && item.day === i)
+    spacesObj.push(<Cell reminders={remindersList} position={i} {...rest} />)
   }
 
   return spacesObj
 }
 
 
-const App = () => {
+const App = props => {
+
   const date = new Date()
   const cyear = date.getFullYear()
   const cmonth = date.getMonth()
@@ -74,7 +89,13 @@ const App = () => {
           <div>Fri</div>
           <div>Sat</div>
           <EmphySpaces spaces={firstDay} />
-          <Spaces spaces={days} currentDay={day} />
+          <Spaces
+            {...props}
+            spaces={days}
+            year={year}
+            month={month}
+            currentDay={day}
+          />
         </CalendarContainer>
 
         <select onChange={e => { setYear(e.target.value) }}>
@@ -87,10 +108,19 @@ const App = () => {
           <option value={6} selected>Jun</option>
         </select>
       </div>
-
-
     </div>
   );
 }
 
-export default App;
+const mapDispatchToProps = dispatch => ({
+  getRemindersList: () => dispatch(RemindersActions.getRemindersList()),
+  addReminder: (reminder) => dispatch(RemindersActions.addReminder(reminder)),
+  deleteReminder: (id) => dispatch(RemindersActions.deleteReminder(id)),
+  editReminder: (reminder) => dispatch(RemindersActions.editReminder(reminder)),
+})
+
+const mapStateToProps = state => ({
+  reminders: RemindersSelectors.remindersList(state)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
