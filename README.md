@@ -1,3 +1,22 @@
+## Project Description
+
+# State Management Tools
+- Redux
+- Redux Sauce
+
+
+# Styling Tools
+- CSS Grid
+- Material UI - materialui/core
+
+
+# Advancements so far (40%)
+- Folders Structure
+- State Management
+- Calendar Grid
+- Add & delete reminders functionality
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

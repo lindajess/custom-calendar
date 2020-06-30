@@ -4,19 +4,21 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import configureStore from './store/configureStore'
 
-import './index.css';
 import App from './containers/App';
 import * as serviceWorker from './serviceWorker';
 
-
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { ThemeProvider } from '@material-ui/core/styles';
+import theme from './theme';
 
 const { store } = configureStore();
 
 ReactDOM.render(
   <Provider store={store}>
-    <React.StrictMode>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <App />
-    </React.StrictMode>
+    </ThemeProvider>
   </Provider>,
   document.getElementById('root')
 );

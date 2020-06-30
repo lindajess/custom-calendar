@@ -51,9 +51,13 @@ const getRemindersList = (state) => {
 }
 
 const addReminder = (state, { reminder }) => {
+    console.log(reminder)
+    const date = new Date(reminder.date)
+    const year = date.getFullYear()
+    const month = date.getMonth() + 1
+    const day = date.getDate()
 
-
-    return { ...state, remindersList: [...state.remindersList, reminder] }
+    return { ...state, remindersList: [...state.remindersList, { ...reminder, year, month, day }] }
 }
 
 const deleteReminder = (state, { id }) => {
